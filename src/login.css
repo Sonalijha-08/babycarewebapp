@@ -1,0 +1,136 @@
+/* WRAPPER */
+.login-wrapper {
+  display: flex;
+  height: 100vh;
+  font-family: "Segoe UI", sans-serif;
+  overflow: hidden;
+  position: relative;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-wrapper.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* LEFT SECTION */
+.login-left {
+  flex: 1;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px;
+  transform: translateX(0);
+  transition: transform 0.8s ease-in-out;
+}
+
+.login-left.split {
+  transform: translateX(0);
+}
+
+.login-left h2 {
+  font-size: 36px;
+  margin-bottom: 8px;
+  color: #2f3e46;
+}
+
+.login-left p {
+  color: #666;
+  margin-bottom: 30px;
+  font-size: 15px;
+}
+
+/* INPUTS */
+.login-left input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.login-left input:focus {
+  border-color: #3a5a40;
+}
+
+/* BUTTON */
+.login-left button {
+  width: 100%;
+  padding: 12px;
+  background: #463251;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.login-left button:hover {
+  background: #743f85;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* SIGNUP TEXT */
+.signup-text {
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.signup-text a {
+  color: #3a5a40;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.signup-text a:hover {
+  text-decoration: underline;
+}
+
+/* RIGHT SECTION */
+.login-right {
+  flex: 1;
+  background: #f5f7f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translateX(0);
+  transition: transform 0.8s ease-in-out;
+}
+
+.login-right.split {
+  transform: translateX(0);
+}
+
+.login-right img {
+  width: 380px;
+  transition: transform 0.5s ease;
+}
+
+.login-right img:hover {
+  transform: scale(1.05);
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .login-wrapper {
+    flex-direction: column;
+  }
+
+  .login-right {
+    display: none;
+  }
+
+  .login-left {
+    padding: 40px;
+  }
+}

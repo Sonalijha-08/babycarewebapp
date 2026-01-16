@@ -1,0 +1,148 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* NAVBAR */
+.nav {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  padding: 18px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  z-index: 100;
+}
+
+.nav-logo {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ff8fb3;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #777;
+  font-weight: 500;
+}
+
+.nav-btn {
+  background: linear-gradient(135deg, #ff8fb3, #ff6fa5);
+  border: none;
+  padding: 12px 26px;
+  color: white;
+  font-weight: 600;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+/* FEATURES */
+.features {
+  padding: 80px 60px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+  background: #fff;
+}
+
+.feature-card {
+  background: #fff5f8;
+  padding: 50px 40px;
+  border-radius: 25px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-6px);
+}
+
+.feature-card img {
+  width: 60px;
+  margin-bottom: 20px;
+}
+
+.feature-card h3 {
+  color: #ff6fa5;
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+
+.feature-card p {
+  color: #666;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* CTA */
+.cta {
+  background: #ffd1dc;
+  padding: 120px 20px;
+  text-align: center;
+}
+
+.cta h1 {
+  color: #ff6fa5;
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+
+.cta p {
+  max-width: 750px;
+  margin: auto;
+  color: #555;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.cta-buttons {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+}
+
+.cta-primary {
+  background: linear-gradient(135deg, #ff8fb3, #ff6fa5);
+  border: none;
+  padding: 16px 36px;
+  border-radius: 40px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cta-secondary {
+  background: transparent;
+  border: 2px solid #ff6fa5;
+  padding: 16px 36px;
+  border-radius: 40px;
+  color: #ff6fa5;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* FOOTER */
+.footer {
+  background: #ff6fa5;
+  color: white;
+  text-align: center;
+  padding: 30px 20px;
+  font-size: 14px;
+}
+
+.footer p {
+  margin: 6px 0;
+}
