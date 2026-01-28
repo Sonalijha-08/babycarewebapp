@@ -21,7 +21,7 @@
 .nav-logo {
   font-size: 28px;
   font-weight: 700;
-  color: #d26a8b;
+  color: #ff8fb3;
 }
 
 .nav-links {
@@ -73,7 +73,7 @@
 }
 
 .feature-card h3 {
-  color: #37243f;
+  color: #ff6fa5;
   font-size: 22px;
   margin-bottom: 15px;
 }
@@ -86,13 +86,13 @@
 
 /* CTA */
 .cta {
-  background: #e8e7e7;
+  background: #ffd1dc;
   padding: 120px 20px;
   text-align: center;
 }
 
 .cta h1 {
-  color: #1b1316;
+  color: #ff6fa5;
   font-size: 40px;
   margin-bottom: 20px;
 }
@@ -113,7 +113,7 @@
 }
 
 .cta-primary {
-  background: linear-gradient(135deg, #d4688a, #ff6fa5);
+  background: linear-gradient(135deg, #ff8fb3, #ff6fa5);
   border: none;
   padding: 16px 36px;
   border-radius: 40px;
@@ -145,136 +145,4 @@
 
 .footer p {
   margin: 6px 0;
-}
-/* HERO SECTION */
-.hero {
-  min-height: 90vh;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 80px 8%;
-  background: linear-gradient(180deg, #ffd6df, #ffeef3);
-}
-
-.hero-left {
-  max-width: 55%;
-  animation: slideInLeft 1.5s ease-out;
-}
-
-.hero-left h1 {
-  font-size: 64px;
-  font-weight: 800;
-  color: #ff5c9a;
-  line-height: 1.1;
-  animation: fadeInUp 1s ease-out 0.5s both;
-}
-
-.hero-left p {
-  margin-top: 20px;
-  font-size: 18px;
-  color: #555;
-  max-width: 520px;
-  animation: fadeInUp 1s ease-out 0.7s both;
-}
-
-.hero-buttons {
-  margin-top: 30px;
-  animation: fadeInUp 1s ease-out 0.9s both;
-}
-
-.primary-btn {
-  background: #ff6fa5;
-  color: white;
-  border: none;
-  padding: 14px 30px;
-  border-radius: 30px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-.primary-btn:hover {
-  background: #ff4f92;
-}
-
-.hero-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 30px;
-  animation: fadeInUp 1s ease-out 1.1s both;
-}
-
-.hero-tags span {
-  background: rgb(241, 241, 241);
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-size: 14px;
-  box-shadow: 0 6px 20px rgba(255, 105, 150, 0.2);
-}
-
-.hero-right {
-  width: 40%;
-  display: flex;
-  justify-content: center;
-  animation: slideInRight 1.5s ease-out;
-}
-
-.dashboard-card {
-  background: #f7f5f5;
-  padding: 30px;
-  border-radius: 30px;
-  width: 320px;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(255, 105, 150, 0.3);
-  animation: fadeInUp 1s ease-out 1.3s both;
-}
-
-.dashboard-card h3 {
-  color: #ff5c9a;
-  margin-bottom: 10px;
-}
-
-.dashboard-card p {
-  font-size: 14px;
-  color: #555;
-}
-
-.dashboard-icon {
-  font-size: 40px;
-  margin-top: 20px;
-}
-
-/* Keyframes for animations */
-@keyframes slideInLeft {
-  from {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    transform: translateY(30px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
 }

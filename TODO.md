@@ -1,13 +1,5 @@
-# Home Page Enhancements TODO
+# TODO: Add Smooth Transitions to Login and Signup Pages
 
-## Tasks
-- [x] Add smooth scrolling behavior globally in index.css
-- [x] Enhance existing transitions in home.css with better easing functions
-- [x] Add more subtle animations to home.css
-- [x] Perfect hero section: add staggered animations to elements
-- [x] Improve hero section responsiveness
-- [x] Add subtle parallax effect on scroll for hero section
-
-## Followup Steps
-- [ ] Test the page for smooth scrolling and transitions
-- [ ] Ensure hero section looks perfect on different screen sizes
+- [ ] Update login.jsx: Add useEffect to trigger split animation after delay
+- [ ] Update signup.jsx: Add useEffect for fade-in animation
+- [ ] Update login.css: Add fade-in animation for wrapper, center positioning, and image entry animation

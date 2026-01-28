@@ -1,105 +1,51 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const multer = require("multer");
-const path = require("path");
 
-// Configure multer for image upload
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Make sure this directory exists
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
-});
-
-const upload = multer({ storage: storage });
-
-// REGISTER
-exports.register = async (req, res) => {
-  const { name, email, password } = req.body;
-
-  const existing = await User.findOne({ email });
-  if (existing) return res.status(400).json({ msg: "User already exists" });
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const user = await User.create({
-    name,
-    email,
-    password: hashedPassword,
-  });
-
-  res.status(201).json({ msg: "User registered successfully" });
-};
-
-// LOGIN
-exports.login = async (req, res) => {
-  const { email, password } = req.body;
-
-  const user = await User.findOne({ email });
-  if (!user) return res.status(400).json({ msg: "Invalid credentials" });
-
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
-
-  const token = jwt.sign(
-    { id: user._id, role: user.role },
-    process.env.JWT_SECRET,
-    { expiresIn: "7d" }
-  );
-
-  res.json({
-    token,
-    userId: user._id,
-    name: user.name,
-    phone: user.phone,
-    babyName: user.babyName,
-    babyDOB: user.babyDOB,
-    profilePicture: user.profilePicture,
-  });
-};
-
-// GET PROFILE
-exports.getProfile = async (req, res) => {
+// Register User
+const registerUser = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
-    if (!user) return res.status(404).json({ msg: "User not found" });
+    const { name, email, password } = req.body;
 
-    res.json(user);
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: "User already exists" });
+    }
+
+    // Hash password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    const newUser = new User({ name, email, password: hashedPassword });
+    await newUser.save();
+
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    res.status(201).json({ message: "User registered successfully!", name: newUser.name, token });
   } catch (error) {
-    res.status(500).json({ msg: "Server error" });
+    res.status(400).json({ error: error.message });
   }
 };
 
-// UPDATE PROFILE
-exports.updateProfile = [
-  upload.single('profilePicture'),
-  async (req, res) => {
-    try {
-      const { name, email, phone, babyName, babyDOB } = req.body;
-      const updateData = { name, email, phone, babyName };
+// Login User
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-      if (babyDOB) {
-        updateData.babyDOB = new Date(babyDOB);
-      }
+    const user = await User.findOne({ email }); // Include password field for comparison
+    if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
-      if (req.file) {
-        updateData.profilePicture = `/uploads/${req.file.filename}`;
-      }
+    // Compare password with hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
 
-      const user = await User.findByIdAndUpdate(
-        req.user.id,
-        updateData,
-        { new: true }
-      ).select('-password');
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-      if (!user) return res.status(404).json({ msg: "User not found" });
-
-      res.json(user);
-    } catch (error) {
-      res.status(500).json({ msg: "Server error" });
-    }
+    res.json({ message: "Login successful!", name: user.name, token });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-];
+};
+
+module.exports = { registerUser, loginUser };

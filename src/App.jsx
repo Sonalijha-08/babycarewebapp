@@ -9,7 +9,6 @@ import SleepLog from "./pages/sleeplog";
 import DiaperLog from "./pages/DiaperLog";
 import GrowthTracker from "./pages/GrowthTracker";
 import Vaccinations from "./pages/Vaccinations";
-import Profile from "./pages/profile";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 
 function App() {
@@ -32,14 +31,6 @@ function App() {
         <Route path="/diaperLog" element={<DiaperLog />} />
         <Route path="/growthTracker" element={<GrowthTracker />} />
         <Route path="/vaccinations" element={<Vaccinations />} />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
       </Routes>
     </>
   );
