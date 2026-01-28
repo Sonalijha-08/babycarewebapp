@@ -6,6 +6,10 @@ const FeedingSchema = new mongoose.Schema({
     ref: "User",
     required: true
   },
+  date: {
+    type: String,
+    required: true
+  },
   time: {
     type: String,
     required: true
@@ -17,7 +21,7 @@ const FeedingSchema = new mongoose.Schema({
   },
   amount: {
     type: Number, // in ml
-    required: true
+    required: false
   },
   notes: {
     type: String,

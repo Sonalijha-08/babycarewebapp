@@ -14,6 +14,18 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  phone: {
+    type: String,
+  },
+  babyName: {
+    type: String,
+  },
+  babyDOB: {
+    type: Date,
+  },
+  profilePicture: {
+    type: String, // URL or path to the image
+  },
 }, {
   timestamps: true,
 });

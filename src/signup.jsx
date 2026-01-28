@@ -8,14 +8,21 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
+  const [isSplit, setIsSplit] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Trigger fade-in animation for smooth page open
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, 200);
-    return () => clearTimeout(timer);
+    // Trigger fade-in animation immediately
+    setIsVisible(true);
+
+    // Trigger container slide animation
+    const splitTimer = setTimeout(() => {
+      setIsSplit(true);
+    }, 400);
+
+    return () => {
+      clearTimeout(splitTimer);
+    };
   }, []);
 
   const handleSignup = async (e) => {
@@ -36,52 +43,70 @@ const Signup = () => {
 
   return (
     <div className={`login-wrapper ${isVisible ? 'visible' : ''}`}>
-      {/* LEFT SIDE - FORM */}
-      <div className="login-left">
-        <h2>Create Account</h2>
-        <p>Please fill in the details to sign up</p>
+      <div className={`login-container ${isSplit ? 'split' : ''}`}>
+        {/* Logo/Icon */}
+        <div className="login-icon"></div>
 
-        <form onSubmit={handleSignup}>
-          <input
-            type="text"
-            placeholder="Full name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
+        {/* Header */}
+        <div className="login-header">
+          <h2>Create Account</h2>
+          <p>Join us today and get started</p>
+        </div>
 
-          <input
-            type="email"
-            placeholder="Email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+        {/* Signup Form */}
+        <form className="login-form" onSubmit={handleSignup}>
+          <div className="input-group">
+            <span className="input-icon">👤</span>
+            <input
+              type="text"
+              placeholder="Full name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <div className="input-group">
+            <span className="input-icon">📧</span>
+            <input
+              type="email"
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-          <button type="submit">Sign Up</button>
+          <div className="input-group">
+            <span className="input-icon">🔒</span>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button type="submit" className="login-button">
+            Sign Up
+          </button>
         </form>
 
+        {/* Divider */}
+        <div className="divider">
+          <span>OR</span>
+        </div>
+
+       
+        {/* Login Link */}
         <p className="signup-text">
           Already have an account?
-          <Link to="/login"> Login</Link>
+          <Link to="/login">Login</Link>
         </p>
-      </div>
 
-      {/* RIGHT SIDE - IMAGE */}
-      <div className="login-right">
-        <img
-          className={isVisible ? 'animate' : ''}
-          src="https://i.pinimg.com/736x/bd/63/76/bd637657c95c2b21dbadeb7c15dea05b.jpg"
-          alt="Baby Illustration"
-        />
+        {/* Decorative Element */}
+        <div className="decorative-circle-1"></div>
       </div>
     </div>
   );

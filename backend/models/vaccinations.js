@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const sleepLogSchema = new mongoose.Schema({
+const VaccinationSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -10,17 +10,25 @@ const sleepLogSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  sleepTime: {
+  time: {
     type: String,
     required: true
   },
-  wakeTime: {
+  vaccineName: {
     type: String,
     required: true
+  },
+  amount: {
+    type: String,
+    default: ""
   },
   duration: {
     type: String,
-    required: true
+    default: ""
+  },
+  side: {
+    type: String,
+    default: ""
   },
   notes: {
     type: String,
@@ -28,4 +36,4 @@ const sleepLogSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-module.exports = mongoose.model("SleepLog", sleepLogSchema);
+module.exports = mongoose.model("Vaccination", VaccinationSchema);

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const sleepLogSchema = new mongoose.Schema({
+const GrowthTrackerSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -10,16 +10,12 @@ const sleepLogSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  sleepTime: {
-    type: String,
+  height: {
+    type: Number, // in cm
     required: true
   },
-  wakeTime: {
-    type: String,
-    required: true
-  },
-  duration: {
-    type: String,
+  weight: {
+    type: Number, // in kg
     required: true
   },
   notes: {
@@ -28,4 +24,4 @@ const sleepLogSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-module.exports = mongoose.model("SleepLog", sleepLogSchema);
+module.exports = mongoose.model("GrowthTracker", GrowthTrackerSchema);

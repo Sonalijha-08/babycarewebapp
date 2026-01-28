@@ -1,25 +1,18 @@
 const mongoose = require("mongoose");
 
-const sleepLogSchema = new mongoose.Schema({
+const DiaperLogSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true
   },
-  date: {
+  time: {
     type: String,
     required: true
   },
-  sleepTime: {
+  type: {
     type: String,
-    required: true
-  },
-  wakeTime: {
-    type: String,
-    required: true
-  },
-  duration: {
-    type: String,
+    enum: ["Wet", "Dirty", "Both"],
     required: true
   },
   notes: {
@@ -28,4 +21,4 @@ const sleepLogSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-module.exports = mongoose.model("SleepLog", sleepLogSchema);
+module.exports = mongoose.model("DiaperLog", DiaperLogSchema);

@@ -6,27 +6,20 @@ import "./login.css";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isSplit, setIsSplit] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [imageAnimate, setImageAnimate] = useState(false);
+  const [isSplit, setIsSplit] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     // Trigger fade-in animation immediately
     setIsVisible(true);
 
-    // Trigger image animation after a short delay
-    const imageTimer = setTimeout(() => {
-      setImageAnimate(true);
-    }, 300);
-
-    // Trigger split animation after a longer delay
+    // Trigger container slide animation
     const splitTimer = setTimeout(() => {
       setIsSplit(true);
-    }, 800);
+    }, 400);
 
     return () => {
-      clearTimeout(imageTimer);
       clearTimeout(splitTimer);
     };
   }, []);
@@ -52,43 +45,64 @@ const Login = () => {
 
   return (
     <div className={`login-wrapper ${isVisible ? 'visible' : ''}`}>
-      {/* LEFT SIDE - FORM */}
-      <div className={`login-left ${isSplit ? 'split' : ''}`}>
-        <h2>Welcome Back</h2>
-        <p>Please sign in to continue</p>
+      <div className={`login-container ${isSplit ? 'split' : ''}`}>
+        {/* Logo/Icon */}
+        <div className="login-icon"></div>
 
-        <form onSubmit={handleLogin}>
-          <input
-            type="email"
-            placeholder="Email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+        {/* Header */}
+        <div className="login-header">
+          <h2>Welcome Back</h2>
+          <p>Enter your credentials to continue</p>
+        </div>
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+        {/* Login Form */}
+        <form className="login-form" onSubmit={handleLogin}>
+          <div className="input-group">
+            <span className="input-icon">📧</span>
+            <input
+              type="email"
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-          <button type="submit">Login</button>
+          <div className="input-group">
+            <span className="input-icon">🔒</span>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="forgot-password">
+            <Link to="/forgot-password">Forgot password?</Link>
+          </div>
+
+          <button type="submit" className="login-button">
+            Login
+          </button>
         </form>
 
-        <p className="signup-text">
-          Don’t have an account?
-          <Link to="/signup"> Sign up</Link>
-        </p>
-      </div>
+        {/* Divider */}
+        <div className="divider">
+          <span>OR</span>
+        </div>
 
-      {/* RIGHT SIDE - IMAGE */}
-      <div className="login-right">
-        <img
-          src="https://i.pinimg.com/1200x/94/72/7d/94727d6107f33521d79d130e8eb29757.jpg"
-          alt="Baby Illustration"
-        />
+       
+
+        {/* Signup Link */}
+        <p className="signup-text">
+          Don't have an account?
+          <Link to="/signup">Sign up</Link>
+        </p>
+
+        {/* Decorative Element */}
+        <div className="decorative-circle-1"></div>
       </div>
     </div>
   );
