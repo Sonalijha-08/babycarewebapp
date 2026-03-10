@@ -1,22 +1,19 @@
 const express = require("express");
 const router = express.Router();
-const SleepLog = require("../models/sleeplog");
+const auth = require("../middleware/auth");
+const {
+  addSleepLog,
+  getSleepLogs,
+  deleteSleepLog
+} = require("../controllers/sleeplogController");
 
-// Save sleep log
-router.post("/", async (req, res) => {
-  try {
-    const sleep = new SleepLog(req.body);
-    await sleep.save();
-    res.status(201).json({ message: "Sleep log saved" });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to save sleep log" });
-  }
-});
+// ➕ Add Sleep Log
+router.post("/add", auth, addSleepLog);
 
-// Get all sleep logs
-router.get("/", async (req, res) => {
-  const logs = await SleepLog.find();
-  res.json(logs);
-});
+// 📥 Get Sleep Logs by User
+router.get("/:userId", auth, getSleepLogs);
+
+// 🗑️ Delete Sleep Log
+router.delete("/:id", auth, deleteSleepLog);
 
 module.exports = router;

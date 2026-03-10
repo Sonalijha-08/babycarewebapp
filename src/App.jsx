@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Login from "./login.jsx";
@@ -9,9 +9,16 @@ import SleepLog from "./pages/sleeplog";
 import DiaperLog from "./pages/DiaperLog";
 import GrowthTracker from "./pages/GrowthTracker";
 import Vaccinations from "./pages/Vaccinations";
+import Profile from "./pages/profile";
+import Tips from "./pages/Tips";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 
 function App() {
+  useEffect(() => {
+    if ("Notification" in window) {
+      Notification.requestPermission();
+    }
+  }, []);
   return (
     <>
       <Routes>
@@ -31,6 +38,15 @@ function App() {
         <Route path="/diaperLog" element={<DiaperLog />} />
         <Route path="/growthTracker" element={<GrowthTracker />} />
         <Route path="/vaccinations" element={<Vaccinations />} />
+        <Route path="/tips" element={<Tips />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );

@@ -1,28 +1,70 @@
 const mongoose = require("mongoose");
 
-const FeedingSchema = new mongoose.Schema({
+const feedingSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true
+    required: true,
+  },
+  date: {
+    type: String,
+    required: true,
   },
   time: {
     type: String,
-    required: true
+    required: true,
   },
   type: {
     type: String,
-    enum: ["Breastmilk", "Formula", "Solid"],
-    required: true
+    required: true,
   },
   amount: {
-    type: Number, // in ml
-    required: true
+    type: Number,
+    default: 0,
+  },
+  duration: {
+    type: String,
+    default: "",
+  },
+  side: {
+    type: String,
+    default: "",
   },
   notes: {
     type: String,
-    default: ""
-  }
-}, { timestamps: true });
+    default: "",
+  },
+  setReminder: {
+    type: Boolean,
+    default: false,
+  },
+  reminderMinutes: {
+    type: Number,
+    default: 30,
+  },
+  // How often to repeat the reminder (in minutes). Default 15 minutes.
+  reminderIntervalMinutes: {
+    type: Number,
+    default: 15,
+  },
+  // How many reminder attempts have been sent
+  reminderRepeatCount: {
+    type: Number,
+    default: 0,
+  },
+  // Max number of repeated reminders (optional)
+  reminderRepeatLimit: {
+    type: Number,
+    default: 96,
+  },
+  reminderSent: {
+    type: Boolean,
+    default: false,
+  },
+  lastReminderSent: {
+    type: Date,
+    default: null,
+  },
+});
 
-module.exports = mongoose.model("Feeding", FeedingSchema);
+module.exports = mongoose.model("Feeding", feedingSchema);

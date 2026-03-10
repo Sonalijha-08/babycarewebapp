@@ -1,37 +1,27 @@
 const express = require("express");
 const router = express.Router();
-const Feeding = require("../models/feeding");
-const auth = require("../middleware/auth");
+const authMiddleware = require("../middleware/auth");
+const { 
+  addFeeding, 
+  getFeedings, 
+  deleteFeeding,
+  sendFeedingReminder 
+} = require("../controllers/feedingController");
+const { updateReminder } = require("../controllers/feedingController");
 
-// Add feeding log
-router.post("/add", auth, async (req, res) => {
-  try {
-    const { userId, time, type, amount, notes } = req.body;
+// Add a new feeding
+router.post("/add", authMiddleware, addFeeding);
 
-    const newLog = new Feeding({
-      userId,
-      time,
-      type,
-      amount,
-      notes
-    });
+// Get all feedings for a user
+router.get("/:userId", authMiddleware, getFeedings);
 
-    await newLog.save();
-    res.json({ message: "Feeding log added!", log: newLog });
+// Delete a feeding
+router.delete("/:id", authMiddleware, deleteFeeding);
 
-  } catch (err) {
-    res.status(500).json({ error: "Server error" });
-  }
-});
+// Send feeding reminder email
+router.post("/send-reminder", authMiddleware, sendFeedingReminder);
 
-// Get all feeding logs
-router.get("/:userId", auth, async (req, res) => {
-  try {
-    const logs = await Feeding.find({ userId: req.params.userId }).sort({ createdAt: -1 });
-    res.json(logs);
-  } catch (err) {
-    res.status(500).json({ error: "Server error" });
-  }
-});
+// Update reminder settings for an existing feeding
+router.patch("/reminder/:id", authMiddleware, updateReminder);
 
 module.exports = router;

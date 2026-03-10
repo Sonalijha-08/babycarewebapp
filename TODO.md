@@ -1,5 +1,10 @@
-# TODO: Add Smooth Transitions to Login and Signup Pages
+# DiaperLog Fix TODO List
 
-- [ ] Update login.jsx: Add useEffect to trigger split animation after delay
-- [ ] Update signup.jsx: Add useEffect for fade-in animation
-- [ ] Update login.css: Add fade-in animation for wrapper, center positioning, and image entry animation
+## Issues to Fix:
+1. [ ] Add `date` field to backend model (diaperlog.js)
+2. [ ] Add date input to frontend form (DiaperLog.jsx)
+3. [ ] Fix fetchLogs function bug in DiaperLog.jsx
+
+## Status:
+- [ ] In Progress
+- [ ] Completed

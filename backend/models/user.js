@@ -14,8 +14,20 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  phone: {
+    type: String,
+  },
+  babyName: {
+    type: String,
+  },
+  babyDOB: {
+    type: Date,
+  },
+  profilePicture: {
+    type: String, // URL or path to the image
+  },
 }, {
   timestamps: true,
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.models.User || mongoose.model('User', userSchema);
