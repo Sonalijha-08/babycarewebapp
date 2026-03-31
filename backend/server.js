@@ -46,13 +46,16 @@ app.use('/api/diaperlog', diaperlogRoutes);
 app.use('/api/growthtracker', growthtrackerRoutes);
 app.use('/api/vaccinations', vaccinationsRoutes);
 
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+// Database connection
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log('Connected to MongoDB');
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
     // Start daily reset job to clear previous-day logs
     try {
       scheduleDailyReset();
@@ -68,8 +71,4 @@ mongoose
   })
   .catch((error) => {
     console.error('MongoDB connection error:', error);
-    app.use("/api/feeding", feedingRoutes);
-    app.use("/api/sleeplog", sleeplogRoutes);
-    app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-    require("./cron/feedingReminder");
   });
