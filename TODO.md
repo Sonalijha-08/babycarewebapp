@@ -1,36 +1,13 @@
-# GrowthTracker Chart Fix Task - COMPLETE ✅
+# Reminder Timing Fix - Perfect 15min Lead Time
 
-## Completed:
+## Plan Breakdown:
+1. [x] Update my/backend/models/feeding.js: Set reminderMinutes default=15\n2. [x] Update my/backend/models/diaperlog.js: Set reminderMinutes default=15 (currently 5)
+3. [x] Update my/backend/controllers/feedingController.js: Remove reminderMinutes override (use model default)\n4. [x] Update my/backend/utils/reminderScheduler.js: \n   - First reminder now exact: now >= reminderTime && !reminderSent (no more ±5min window)\n   - Defaults standardized to 15min\n   - Improved precise logging\n
+   - Change first reminder to exact time: now >= reminderTime && !reminderSent
+   - Consistent defaults & logic for diaper/feedings
+   - Better logging
+5. [ ] Restart server and test with test_reminder_flow.js (set reminderMinutes=2 for quick test)
+6. [ ] Verify production: Create feeding 17min from now, confirm reminder at exactly -15min
 
-### 1. [✅] Chart fixed
-   - Added `BarElement` registration (fixes blank chart)
-   - 400px responsive container 
-   - Loading spinner + 📊 empty state
-   - Console debug logging
-   - Smooth animations & tooltips
-
-### 2. [✅] Full CRUD implemented
-   - Add records (Log tab → auto-refreshes Chart)
-   - **Delete records (History tab)** - Confirm dialog + refresh
-   - Backend auth protected
-
-### 3. [✅] Verified features
-   - Chart renders data/no-data states properly
-   - Delete removes rows + updates stats/chart instantly
-   - Error handling + user feedback
-
-## Files Updated:
-- `my/src/pages/GrowthTracker.jsx` 
-- `my/src/pages/GrowthTracker.css`
-- `my/TODO.md`
-
-## Test Commands:
-```
-cd my/backend && npm start
-cd ../ && npm run dev
-```
-
-**GrowthTracker fully functional!** 🎉
-
-
+**Current:** Starting step 1...
 
