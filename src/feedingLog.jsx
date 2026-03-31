@@ -18,6 +18,7 @@ const FeedingLog = () => {
     setReminder: false, 
     reminderMinutes: 15 
   });
+  const [errors, setErrors] = useState({});
 
   const addFeeding = async (date, time, type, amount, notes, setReminder, reminderMinutes) => {
     try {
@@ -84,8 +85,25 @@ const FeedingLog = () => {
     });
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.date) newErrors.date = 'Date is required';
+    if (!formData.time) newErrors.time = 'Time is required';
+    if (!formData.type) newErrors.type = 'Type is required';
+    if (formData.amount && formData.amount < 0) newErrors.amount = 'Amount must be >= 0';
+    if (formData.reminderMinutes && (formData.reminderMinutes < 1 || formData.reminderMinutes > 1440)) {
+      newErrors.reminderMinutes = 'Reminder minutes between 1-1440';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     await addFeeding(
       formData.date, 
       formData.time, 
@@ -106,6 +124,7 @@ const FeedingLog = () => {
       setReminder: false,
       reminderMinutes: 15
     });
+    setErrors({});
   };
 
   const deleteFeeding = async (id) => {

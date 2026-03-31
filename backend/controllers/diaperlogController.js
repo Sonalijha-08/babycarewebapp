@@ -9,6 +9,9 @@ const { sendReminderEmail } = require("../utils/resendEmail");
 // Add a new diaper log
 const addDiaperLog = async (req, res) => {
   try {
+    const { sendValidationErrors } = require('../middleware/validators');
+    sendValidationErrors(req, res);
+
     const { date, time, type, notes, setReminder, reminderMinutes, reminderIntervalMinutes, reminderRepeatLimit } = req.body;
 
     const newLog = new DiaperLog({
@@ -97,8 +100,41 @@ const deleteDiaperLog = async (req, res) => {
   }
 };
 
+// Update reminder settings for an existing diaper log (symmetry with feeding)
+const updateDiaperReminder = async (req, res) => {
+  try {
+    const diaperId = req.params.id;
+    const { setReminder, reminderMinutes, reminderIntervalMinutes, reminderRepeatLimit, reminderSent } = req.body;
+
+    const diaper = await DiaperLog.findById(diaperId);
+    if (!diaper) return res.status(404).json({ message: 'Diaper log not found' });
+    if (diaper.userId.toString() !== req.user.id) return res.status(403).json({ message: 'Unauthorized' });
+
+    // Update fields
+    if (typeof setReminder === 'boolean') diaper.setReminder = setReminder;
+    if (typeof reminderMinutes === 'number') diaper.reminderMinutes = reminderMinutes;
+    if (typeof reminderIntervalMinutes === 'number') diaper.reminderIntervalMinutes = reminderIntervalMinutes;
+    if (typeof reminderRepeatLimit === 'number') diaper.reminderRepeatLimit = reminderRepeatLimit;
+    if (typeof reminderSent === 'boolean') diaper.reminderSent = reminderSent;
+
+    // Reset repeat count if changing settings
+    if (typeof reminderIntervalMinutes === 'number' || typeof reminderMinutes === 'number') {
+      diaper.reminderRepeatCount = 0;
+      diaper.lastReminderSent = null;
+    }
+
+    await diaper.save();
+
+    res.json({ success: true, diaper });
+  } catch (error) {
+    console.error('Error updating diaper reminder:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   addDiaperLog,
   getDiaperLogs,
-  deleteDiaperLog
+  deleteDiaperLog,
+  updateDiaperReminder
 };

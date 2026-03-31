@@ -7,13 +7,12 @@ const {
   deleteGrowthRecord
 } = require("../controllers/growthtrackerController");
 
-// ➕ Add Growth Record
-router.post("/add", auth, addGrowthRecord);
+const { validateGrowthAdd, validateIdParam } = require('../middleware/validators');
 
-// 📥 Get Growth Records by User
+router.post("/add", auth, validateGrowthAdd, addGrowthRecord);
+
 router.get("/:userId", auth, getGrowthRecords);
 
-// 🗑️ Delete Growth Record
 router.delete("/:id", auth, deleteGrowthRecord);
 
 module.exports = router;

@@ -40,7 +40,7 @@ const feedingSchema = new mongoose.Schema({
   },
   reminderMinutes: {
     type: Number,
-    default: 30,
+    default: 15,
   },
   // How often to repeat the reminder (in minutes). Default 15 minutes.
   reminderIntervalMinutes: {

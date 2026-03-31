@@ -4,16 +4,18 @@ const auth = require("../middleware/auth");
 const {
   addDiaperLog,
   getDiaperLogs,
-  deleteDiaperLog
+  deleteDiaperLog,
+  updateDiaperReminder
 } = require("../controllers/diaperlogController");
 
-// ➕ Add Diaper Log
-router.post("/add", auth, addDiaperLog);
+const { validateDiaperAdd, validateIdParam } = require('../middleware/validators');
 
-// 📥 Get Diaper Logs by User
+router.post("/add", auth, validateDiaperAdd, addDiaperLog);
+
 router.get("/:userId", auth, getDiaperLogs);
 
-// 🗑️ Delete Diaper Log
 router.delete("/:id", auth, deleteDiaperLog);
+
+router.post("/update-reminder/:id", auth, updateDiaperReminder);
 
 module.exports = router;

@@ -29,7 +29,7 @@ const DiaperLogSchema = new mongoose.Schema({
   },
   reminderMinutes: {
     type: Number,
-    default: 5
+    default: 15
   },
   reminderIntervalMinutes: {
     type: Number,

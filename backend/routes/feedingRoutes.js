@@ -9,19 +9,16 @@ const {
 } = require("../controllers/feedingController");
 const { updateReminder } = require("../controllers/feedingController");
 
-// Add a new feeding
-router.post("/add", authMiddleware, addFeeding);
+const { validateFeedingAdd, validateIdParam } = require('../middleware/validators');
 
-// Get all feedings for a user
+router.post("/add", authMiddleware, validateFeedingAdd, addFeeding);
+
 router.get("/:userId", authMiddleware, getFeedings);
 
-// Delete a feeding
 router.delete("/:id", authMiddleware, deleteFeeding);
 
-// Send feeding reminder email
 router.post("/send-reminder", authMiddleware, sendFeedingReminder);
 
-// Update reminder settings for an existing feeding
 router.patch("/reminder/:id", authMiddleware, updateReminder);
 
 module.exports = router;

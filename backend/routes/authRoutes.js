@@ -4,8 +4,10 @@ const { register, login } = require("../controllers/authcontroller");
 const profileRouter = require("./profileRoutes");
 const auth = require("../middleware/auth");
 
-router.post("/register", register);
-router.post("/login", login);
+const { validateRegister, validateLogin } = require('../middleware/validators');
+
+router.post("/register", validateRegister, register);
+router.post("/login", validateLogin, login);
 
 // Mount profile routes — this handles GET /auth/profile and PUT /auth/profile
 router.use("/", profileRouter);

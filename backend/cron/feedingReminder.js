@@ -3,7 +3,8 @@ const Feeding = require("../models/feeding");
 const User = require("../models/User");
 const sendEmail = require("../utils/resendEmail");
 
-cron.schedule("*/5 * * * *", async () => {
+// DISABLED LEGACY CRON (use reminderScheduler.js instead):
+// cron.schedule("*/5 * * * *", async () => {
   console.log("⏰ Checking feeding reminders...");
 
   const now = new Date();

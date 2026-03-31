@@ -3,6 +3,9 @@ const SleepLog = require("../models/sleeplog");
 // Add a new sleep log
 const addSleepLog = async (req, res) => {
   try {
+    const { sendValidationErrors } = require('../middleware/validators');
+    sendValidationErrors(req, res);
+
     const { userId, date, sleepTime, wakeTime, duration, notes } = req.body;
 
     const newLog = new SleepLog({

@@ -7,13 +7,12 @@ const {
   deleteVaccination
 } = require("../controllers/vaccinationsController");
 
-// Add vaccination
-router.post("/add", auth, addVaccination);
+const { validateVaccinationAdd, validateIdParam } = require('../middleware/validators');
 
-// Get vaccinations by user
+router.post("/add", auth, validateVaccinationAdd, addVaccination);
+
 router.get("/:userId", auth, getVaccinations);
 
-// Delete vaccination
 router.delete("/:id", auth, deleteVaccination);
 
 module.exports = router;

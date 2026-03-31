@@ -3,6 +3,9 @@ const Vaccination = require("../models/vaccinations");
 // Add a new vaccination
 const addVaccination = async (req, res) => {
   try {
+    const { sendValidationErrors } = require('../middleware/validators');
+    sendValidationErrors(req, res);
+
     const { date, vaccineName, amount, duration, side, notes, nextVaccinationDate, reminderEnabled } = req.body;
 
     const newVaccination = new Vaccination({

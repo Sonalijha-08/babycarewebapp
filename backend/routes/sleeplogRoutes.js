@@ -7,13 +7,12 @@ const {
   deleteSleepLog
 } = require("../controllers/sleeplogController");
 
-// ➕ Add Sleep Log
-router.post("/add", auth, addSleepLog);
+const { validateSleepAdd, validateIdParam } = require('../middleware/validators');
 
-// 📥 Get Sleep Logs by User
+router.post("/add", auth, validateSleepAdd, addSleepLog);
+
 router.get("/:userId", auth, getSleepLogs);
 
-// 🗑️ Delete Sleep Log
 router.delete("/:id", auth, deleteSleepLog);
 
 module.exports = router;

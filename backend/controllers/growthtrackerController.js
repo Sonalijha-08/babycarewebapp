@@ -3,6 +3,9 @@ const GrowthTracker = require("../models/growthtracker");
 // Add a new growth record
 const addGrowthRecord = async (req, res) => {
   try {
+    const { sendValidationErrors } = require('../middleware/validators');
+    sendValidationErrors(req, res);
+
     const { userId, date, weight, height, headCircumference, notes } = req.body;
 
     const newRecord = new GrowthTracker({

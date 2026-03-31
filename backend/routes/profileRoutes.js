@@ -68,7 +68,9 @@ router.get('/profile', auth, async (req, res) => {
 // ─────────────────────────────────────────────────────────────────
 // PUT /auth/profile
 // ─────────────────────────────────────────────────────────────────
-router.put('/profile', auth, upload.single('profilePicture'), async (req, res) => {
+const { validateProfileUpdate } = require('../middleware/validators');
+
+router.put('/profile', auth, upload.single('profilePicture'), validateProfileUpdate, async (req, res) => {
   try {
     const { name, email, phone, babyName, babyDOB } = req.body;
 

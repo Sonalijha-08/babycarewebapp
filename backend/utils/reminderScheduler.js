@@ -2,7 +2,7 @@ const cron = require('node-cron');
 const Feeding = require('../models/feeding');
 const DiaperLog = require('../models/diaperlog');
 const Vaccination = require('../models/vaccinations');
-const User = require('../models/User');
+const User = require('../models/user');
 const { sendReminderEmail } = require('./resendEmail');
 
 // Run every minute to check for due reminders
@@ -35,7 +35,7 @@ const scheduleFeedingReminders = () => {
         }
 
         // Use reminderMinutes for the lead time (when to first send reminder)
-        const reminderMinutes = feeding.reminderMinutes || 30;
+        const reminderMinutes = feeding.reminderMinutes || 15;
         const intervalMinutes = feeding.reminderIntervalMinutes || 15;
         
         // Calculate when reminder should be sent (reminderMinutes before scheduled time)
@@ -45,19 +45,13 @@ const scheduleFeedingReminders = () => {
         const lastReminder = feeding.lastReminderSent ? new Date(feeding.lastReminderSent).getTime() : 0;
         const timeSinceLastReminder = now.getTime() - lastReminder;
         
-        // Check if it's time to send reminder:
-        // 1. First reminder: within window (5 min before to 2 min after scheduled reminder time)
-        // 2. Repeated reminders: at least intervalMinutes have passed since last reminder
-        const timeSinceReminderTime = now.getTime() - reminderTime.getTime();
-        const fiveMinutesMs = 5 * 60 * 1000;
-        const twoMinutesMs = 2 * 60 * 1000;
+        // PERFECT TIMING: First reminder exactly at or after reminderTime, repeats every intervalMinutes after LAST sent
+        const isFirstReminderTime = !feeding.reminderSent && now.getTime() >= reminderTime.getTime();
+        const isRepeatReminderTime = feeding.reminderSent && timeSinceLastReminder >= intervalMinutes * 60 * 1000;
         
-        const isFirstReminderWindow = !feeding.reminderSent && timeSinceReminderTime >= -fiveMinutesMs && timeSinceReminderTime <= twoMinutesMs;
-        const isRepeatReminderTime = feeding.reminderSent && feeding.reminderRepeatCount > 0 && timeSinceLastReminder >= intervalMinutes * 60 * 1000;
+        console.log(`[${now.toLocaleTimeString()}] 📋 Feeding ${feeding._id}: scheduled=${scheduledTime.toLocaleTimeString()}, reminderTime=${reminderTime.toLocaleTimeString()} (lead:${reminderMinutes}min), firstReady=${isFirstReminderTime}, repeatReady=${isRepeatReminderTime} (last:${Math.round(timeSinceLastReminder/60000)}min ago)`);
         
-        console.log(`[${now.toLocaleTimeString()}] 📋 Feeding ${feeding._id}: scheduledTime=${scheduledTime.toLocaleTimeString()}, reminderTime=${reminderTime.toLocaleTimeString()}, isFirstWindow=${isFirstReminderWindow}, isRepeat=${isRepeatReminderTime}`);
-        
-        if (isFirstReminderWindow || isRepeatReminderTime) {
+        if (isFirstReminderTime || isRepeatReminderTime) {
           // Find user first to get their email
           const user = await User.findById(feeding.userId);
           
@@ -123,7 +117,7 @@ const scheduleFeedingReminders = () => {
           continue;
         }
 
-        const reminderMinutes = diaper.reminderMinutes || 30;
+        const reminderMinutes = diaper.reminderMinutes || 15;
         const intervalMinutes = diaper.reminderIntervalMinutes || 15;
         const reminderTime = new Date(scheduledTime.getTime() - reminderMinutes * 60 * 1000);
 
@@ -131,16 +125,13 @@ const scheduleFeedingReminders = () => {
         const lastReminder = diaper.lastReminderSent ? new Date(diaper.lastReminderSent).getTime() : 0;
         const timeSinceLastReminder = now.getTime() - lastReminder;
         
-        const timeSinceReminderTime = now.getTime() - reminderTime.getTime();
-        const fiveMinutesMs = 5 * 60 * 1000;
-        const twoMinutesMs = 2 * 60 * 1000;
-        
-        const isFirstReminderWindow = !diaper.reminderSent && timeSinceReminderTime >= -fiveMinutesMs && timeSinceReminderTime <= twoMinutesMs;
-        const isRepeatReminderTime = diaper.reminderSent && diaper.reminderRepeatCount > 0 && timeSinceLastReminder >= intervalMinutes * 60 * 1000;
+        // PERFECT TIMING: same as feeding
+        const isFirstReminderTime = !diaper.reminderSent && now.getTime() >= reminderTime.getTime();
+        const isRepeatReminderTime = diaper.reminderSent && timeSinceLastReminder >= intervalMinutes * 60 * 1000;
 
-        console.log(`[${now.toLocaleTimeString()}] 📋 Diaper ${diaper._id}: scheduledTime=${scheduledTime.toLocaleTimeString()}, reminderTime=${reminderTime.toLocaleTimeString()}, isFirstWindow=${isFirstReminderWindow}, isRepeat=${isRepeatReminderTime}`);
+        console.log(`[${now.toLocaleTimeString()}] 📋 Diaper ${diaper._id}: scheduled=${scheduledTime.toLocaleTimeString()}, reminderTime=${reminderTime.toLocaleTimeString()} (lead:${reminderMinutes}min), firstReady=${isFirstReminderTime}, repeatReady=${isRepeatReminderTime}`);
 
-        if (isFirstReminderWindow || isRepeatReminderTime) {
+        if (isFirstReminderTime || isRepeatReminderTime) {
           const user = await User.findById(diaper.userId);
           
           if (!user) {
@@ -176,7 +167,7 @@ const scheduleFeedingReminders = () => {
               $inc: { reminderRepeatCount: 1 },
               $set: { reminderSent: true, lastReminderSent: new Date() }
             });
-console.log(`[${now.toLocaleTimeString()}] ✅ Diaper reminder SENT successfully to ${user.email} for diaper ${diaper._id}`);
+            console.log(`[${now.toLocaleTimeString()}] ✅ Diaper reminder SENT successfully to ${user.email} for diaper ${diaper._id}`);
           } catch (err) {
             console.error(`[${now.toLocaleTimeString()}] ❌ FAILED to send diaper reminder to ${user.email}:`, err.message);
           }

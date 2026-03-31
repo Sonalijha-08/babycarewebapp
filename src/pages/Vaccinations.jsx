@@ -17,6 +17,7 @@ const Vaccination = () => {
     nextVaccinationDate: '',
     reminderEnabled: false
   });
+  const [errors, setErrors] = useState({});
 
   const addVaccination = async (date, vaccineName, amount, duration, side, notes, nextVaccinationDate, reminderEnabled) => {
     try {
@@ -60,8 +61,21 @@ const Vaccination = () => {
     });
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.date) newErrors.date = 'Date is required';
+    if (!formData.vaccineName) newErrors.vaccineName = 'Vaccine name is required';
+    if (formData.amount && formData.amount < 0) newErrors.amount = 'Amount must be >= 0';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     await addVaccination(
       formData.date, 
       formData.vaccineName, 
@@ -82,6 +96,7 @@ const Vaccination = () => {
       nextVaccinationDate: '',
       reminderEnabled: false
     });
+    setErrors({});
   };
 
   const handleDelete = async (id) => {
@@ -258,10 +273,19 @@ const Vaccination = () => {
               </div>
               <button
                 type="submit"
-                style={{ background: 'linear-gradient(135deg, #ff5fa2, #ff85b2)', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '25px', cursor: 'pointer', fontSize: '16px' }}
+                disabled={Object.keys(errors).length > 0}
+                style={{ 
+                  background: Object.keys(errors).length > 0 ? '#ccc' : 'linear-gradient(135deg, #ff5fa2, #ff85b2)', 
+                  color: 'white', padding: '10px 20px', border: 'none', borderRadius: '25px', cursor: Object.keys(errors).length > 0 ? 'not-allowed' : 'pointer', fontSize: '16px' 
+                }}
               >
-                Save Vaccination
+                {Object.keys(errors).length > 0 ? 'Fix errors above' : 'Save Vaccination'}
               </button>
+              {Object.keys(errors).length > 0 && (
+                <div style={{ color: '#ff5fa2', fontSize: '14px', textAlign: 'center' }}>
+                  Please fix the errors above before submitting
+                </div>
+              )}
             </form>
           </div>
         )}

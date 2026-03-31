@@ -15,6 +15,7 @@ export default function DiaperLog() {
     setReminder: false,
     reminderMinutes: 15
   });
+  const [errors, setErrors] = useState({});
   const [userId, setUserId] = useState('');
 
   useEffect(() => {
@@ -51,8 +52,24 @@ export default function DiaperLog() {
     });
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.date) newErrors.date = 'Date is required';
+    if (!formData.time) newErrors.time = 'Time is required';
+    if (!formData.type) newErrors.type = 'Type is required';
+    if (formData.reminderMinutes && (formData.reminderMinutes < 1 || formData.reminderMinutes > 1440)) {
+      newErrors.reminderMinutes = 'Reminder minutes between 1-1440';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     try {
       const token = localStorage.getItem('token');
       await axios.post('http://localhost:5000/api/diaperlog/add', {
@@ -62,6 +79,7 @@ export default function DiaperLog() {
         headers: { Authorization: `Bearer ${token}` },
       });
       setFormData({ date: '', time: '', type: '', notes: '', setReminder: false, reminderMinutes: 15 });
+      setErrors({});
       fetchLogs(userId);
     } catch (error) {
       console.error('Error adding diaper log:', error);
@@ -229,10 +247,19 @@ export default function DiaperLog() {
 
               <button
                 type="submit"
-                style={{ background: 'linear-gradient(135deg, #ff5fa2, #ff85b2)', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '25px', cursor: 'pointer', fontSize: '16px' }}
+                disabled={Object.keys(errors).length > 0}
+                style={{ 
+                  background: Object.keys(errors).length > 0 ? '#ccc' : 'linear-gradient(135deg, #ff5fa2, #ff85b2)', 
+                  color: 'white', padding: '10px 20px', border: 'none', borderRadius: '25px', cursor: Object.keys(errors).length > 0 ? 'not-allowed' : 'pointer', fontSize: '16px' 
+                }}
               >
-                Save Diaper Change
+                {Object.keys(errors).length > 0 ? 'Fix errors above' : 'Save Diaper Change'}
               </button>
+              {Object.keys(errors).length > 0 && (
+                <div style={{ color: '#ff5fa2', fontSize: '14px', textAlign: 'center' }}>
+                  Please fix the errors above before submitting
+                </div>
+              )}
             </form>
           </div>
         )}

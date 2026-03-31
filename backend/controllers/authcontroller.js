@@ -43,6 +43,9 @@ const upload = multer({
 // ─────────────────────────────────────────────
 const register = async (req, res) => {
   try {
+    const { sendValidationErrors } = require('../middleware/validators');
+    sendValidationErrors(req, res);
+
     const { name, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });

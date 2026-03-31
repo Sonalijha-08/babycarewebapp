@@ -9,6 +9,9 @@ const { sendReminderEmail } = require("../utils/resendEmail");
 // Add a new feeding
 const addFeeding = async (req, res) => {
   try {
+    const { sendValidationErrors } = require('../middleware/validators');
+    sendValidationErrors(req, res);
+
     const { date, time, type, amount, duration, side, notes, setReminder, reminderMinutes, reminderIntervalMinutes, reminderRepeatLimit } = req.body;
 
     const newFeeding = new Feeding({
@@ -21,8 +24,8 @@ const addFeeding = async (req, res) => {
       side: side || "",
       notes: notes || "",
       setReminder: setReminder || false,
-      reminderMinutes: reminderMinutes || 15,
-      reminderIntervalMinutes: reminderIntervalMinutes || 15,
+      reminderMinutes: reminderMinutes,
+      reminderIntervalMinutes: reminderIntervalMinutes,
       reminderRepeatCount: 0,
       reminderRepeatLimit: reminderRepeatLimit || 96,
       reminderSent: false,
@@ -181,7 +184,7 @@ const updateReminder = async (req, res) => {
             if (user && user.email) {
               const subject = '🍼 Feeding Reminder';
               const text = `Feeding reminder: ${currentFeeding.type} - ${currentFeeding.amount || 0}ml at ${currentFeeding.time}`;
-              const html = `<div style="font-family: Arial, sans-serif; padding: 20px; background: #fff5f9; border-radius: 10px;">\n  <h2 style=\"color: #ff5fa2;\">🍼 Feeding Reminder</h2>\n  <p>Hi ${user.name || 'there'},</p>\n  <p>This is a friendly reminder that it's time to feed your baby!</p>\n  <div style=\"background: white; padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #ff5fa2;\">\n    <p style=\"margin: 5px 0;\"><strong>⏰ Scheduled Time:</strong> ${currentFeeding.time}</p>\n    <p style=\"margin: 5px 0;\"><strong>🍼 Type:</strong> ${currentFeeding.type}</p>\n    <p style=\"margin: 5px 0;\"><strong>📊 Amount:</strong> ${currentFeeding.amount || 0} ml</p>\n  </div>\n  <p>Have everything ready for a smooth feeding! 💕</p>\n</div>`;
+              const html = `<div style="font-family: Arial, sans-serif; padding: 20px; background: #fff5f9; border-radius: 10px;">\n  <h2 style=\\"color: #ff5fa2;\\">🍼 Feeding Reminder</h2>\n  <p>Hi ${user.name || 'there'},</p>\n  <p>This is a friendly reminder that it's time to feed your baby!</p>\n  <div style=\\"background: white; padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #ff5fa2;\\">\n    <p style=\\"margin: 5px 0;\\"><strong>⏰ Scheduled Time:</strong> ${currentFeeding.time}</p>\n    <p style=\\"margin: 5px 0;\\"><strong>🍼 Type:</strong> ${currentFeeding.type}</p>\n    <p style=\\"margin: 5px 0;\\"><strong>📊 Amount:</strong> ${currentFeeding.amount || 0} ml</p>\n  </div>\n  <p>Have everything ready for a smooth feeding! 💕</p>\n</div>`;
 
               await sendReminderEmail(user.email, subject, text, html);
               await Feeding.findByIdAndUpdate(feeding._id, { $inc: { reminderRepeatCount: 1 }, lastReminderSent: new Date() });
