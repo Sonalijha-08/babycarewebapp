@@ -3,14 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "backend/server.js",
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
   "scripts": {
-    "start": "npm start -w backend",
-    "build": "npm run build -w frontend",
-    "install-all": "npm install"
+    "start": "node backend/server.js",
+    "build": "cd frontend && npm install && npm run build"
   },
   "keywords": [],
   "author": "",
