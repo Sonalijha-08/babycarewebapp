@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../api/axios";
 import { jwtDecode } from "jwt-decode";
-import "./vaccinations.css";
+import "./Vaccinations.css";
 
 const Vaccination = () => {
   const [activeTab, setActiveTab] = useState("log");
