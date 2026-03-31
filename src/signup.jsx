@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "./api/axios";
 import { useNavigate, Link } from "react-router-dom";
 import "./login.css"; // reuse same css
 
@@ -30,8 +30,8 @@ const Signup = () => {
     e.preventDefault();
 
     try {
-      await axios.post(
-        "http://localhost:5000/api/auth/register",
+      await api.post(
+        "/auth/register",
         { name, email, password }
       );
 

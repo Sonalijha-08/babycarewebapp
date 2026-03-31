@@ -1,6 +1,6 @@
 import "./sleepLog.css";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import { jwtDecode } from "jwt-decode";
 
 export default function SleepLog() {
@@ -28,9 +28,7 @@ export default function SleepLog() {
   const fetchLogs = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:5000/api/sleeplog/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await api.get(`/sleeplog/${userId}`);
       setLogs(response.data);
     } catch (error) {
       console.error('Error fetching sleep logs:', error);
@@ -39,10 +37,7 @@ export default function SleepLog() {
 
   const deleteSleepLog = async (id) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/sleeplog/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.delete(`/sleeplog/${id}`);
       fetchLogs();
     } catch (error) {
       console.error('Error deleting sleep log:', error);
@@ -70,12 +65,9 @@ export default function SleepLog() {
     if (!validateForm()) return;
 
     try {
-      const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/sleeplog/add', {
+      await api.post('/sleeplog/add', {
         userId,
         ...form
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
       });
       setForm({ date: "", sleepTime: "", wakeTime: "", duration: "", notes: "" });
       setErrors({});

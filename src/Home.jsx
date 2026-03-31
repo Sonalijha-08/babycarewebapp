@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "./api/axios";
+import api from "./api/axios";
 import "./home.css";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || "http://localhost:5000";
 
 const Home = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -21,7 +21,7 @@ const Home = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get("/auth/profile");
+        const response = await api.get("/auth/profile");
         setUserProfile(response.data);
       } catch (error) {
         console.error("Error fetching user profile:", error);

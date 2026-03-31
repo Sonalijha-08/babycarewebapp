@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import { jwtDecode } from "jwt-decode";
 import {
   Chart as ChartJS,
@@ -51,12 +51,7 @@ export default function GrowthTracker() {
   const fetchRecords = async (id) => {
     setIsLoading(true);
     try {
-      const res = await axios.get(
-        `http://localhost:5000/api/growthtracker/${id}`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        }
-      );
+      const res = await api.get(`/growthtracker/${id}`);
       setRecords(res.data);
     } catch (error) {
       console.error('Failed to fetch growth records:', error);
@@ -73,10 +68,7 @@ export default function GrowthTracker() {
     if (!confirm('Delete this growth record?')) return;
 
     try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/growthtracker/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.delete(`/growthtracker/${id}`);
       fetchRecords(userId);
     } catch (error) {
       console.error('Error deleting record:', error);
@@ -103,14 +95,11 @@ export default function GrowthTracker() {
     if (!validateForm()) return;
 
     try {
-      const token = localStorage.getItem('token');
-      await axios.post("http://localhost:5000/api/growthtracker/add", {
+      await api.post("/growthtracker/add", {
         ...form,
         userId,
         height: Number(form.height),
         weight: Number(form.weight),
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
       });
 
       setForm({ date: "", height: "", weight: "", notes: "" });

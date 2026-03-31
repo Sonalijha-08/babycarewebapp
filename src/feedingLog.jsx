@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import api from "../src/api/axios";
+import api from "./api/axios";
 import { jwtDecode } from "jwt-decode";
 import "./feedinglog.css";
 

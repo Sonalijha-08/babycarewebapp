@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import "./Diperlog.css";
-import axios from "axios";
+import api from "../api/axios";
 import { jwtDecode } from "jwt-decode";
 
 export default function DiaperLog() {
@@ -35,9 +35,7 @@ export default function DiaperLog() {
   const fetchLogs = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:5000/api/diaperlog/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await api.get(`/diaperlog/${id}`);
       setLogs(response.data);
     } catch (error) {
       console.error('Error fetching diaper logs:', error);
@@ -72,11 +70,9 @@ export default function DiaperLog() {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/diaperlog/add', {
+      await api.post('/diaperlog/add', {
         userId,
         ...formData
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
       });
       setFormData({ date: '', time: '', type: '', notes: '', setReminder: false, reminderMinutes: 15 });
       setErrors({});
@@ -88,10 +84,7 @@ export default function DiaperLog() {
 
   const handleDelete = async (id) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/diaperlog/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.delete(`/diaperlog/${id}`);
       fetchLogs(userId);
     } catch (error) {
       console.error('Error deleting diaper log:', error);
