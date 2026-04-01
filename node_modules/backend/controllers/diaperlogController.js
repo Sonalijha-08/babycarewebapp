@@ -10,7 +10,7 @@ const { sendReminderEmail } = require("../utils/resendEmail");
 const addDiaperLog = async (req, res) => {
   try {
     const { sendValidationErrors } = require('../middleware/validators');
-    sendValidationErrors(req, res);
+    if (sendValidationErrors(req, res)) return;
 
     const { date, time, type, notes, setReminder, reminderMinutes, reminderIntervalMinutes, reminderRepeatLimit } = req.body;
 

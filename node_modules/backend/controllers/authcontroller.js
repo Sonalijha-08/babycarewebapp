@@ -44,7 +44,7 @@ const upload = multer({
 const register = async (req, res) => {
   try {
     const { sendValidationErrors } = require('../middleware/validators');
-    sendValidationErrors(req, res);
+    if (sendValidationErrors(req, res)) return;
 
     const { name, email, password } = req.body;
 

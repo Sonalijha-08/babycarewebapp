@@ -6,10 +6,11 @@ const sendValidationErrors = (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ 
       success: false, 
-      message: 'Validation failed', 
+      message: 'Validation failed. ' + errors.array().map(e => e.msg).join(', '), 
       errors: errors.array() 
     });
   }
+  return null;
 };
 
 // Diaper Log Add

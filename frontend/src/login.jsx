@@ -35,11 +35,12 @@ const Login = () => {
 
       // Save login data
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("name", res.data.name);
+      localStorage.setItem("name", res.data.user.name);
 
       navigate("/home");
     } catch (error) {
-      alert("Invalid email or password");
+      const msg = error.response?.data?.message || "Invalid email or password";
+      alert(msg);
     }
   };
 

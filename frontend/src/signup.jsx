@@ -38,7 +38,7 @@ const Signup = () => {
       alert("Signup successful! Please login.");
       navigate("/login");
     } catch (error) {
-      const msg = error.response?.data?.msg || "Signup failed";
+      const msg = error.response?.data?.message || "Signup failed";
       alert(msg);
     }
   };

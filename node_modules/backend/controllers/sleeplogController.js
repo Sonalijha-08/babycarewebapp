@@ -4,7 +4,7 @@ const SleepLog = require("../models/sleeplog");
 const addSleepLog = async (req, res) => {
   try {
     const { sendValidationErrors } = require('../middleware/validators');
-    sendValidationErrors(req, res);
+    if (sendValidationErrors(req, res)) return;
 
     const { userId, date, sleepTime, wakeTime, duration, notes } = req.body;
 

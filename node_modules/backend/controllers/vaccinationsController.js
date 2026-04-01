@@ -4,7 +4,7 @@ const Vaccination = require("../models/vaccinations");
 const addVaccination = async (req, res) => {
   try {
     const { sendValidationErrors } = require('../middleware/validators');
-    sendValidationErrors(req, res);
+    if (sendValidationErrors(req, res)) return;
 
     const { date, vaccineName, amount, duration, side, notes, nextVaccinationDate, reminderEnabled } = req.body;
 
