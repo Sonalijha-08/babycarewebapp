@@ -8,4 +8,11 @@ const axios = require('axios');
     console.log('Server not responding:', err.message);
     process.exit(1);
   }
+  const cors = require("cors");
+
+  app.use(cors({
+    origin: "https://babycarewebapp-97z9.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+  }));
 })();
