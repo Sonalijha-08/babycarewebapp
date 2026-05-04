@@ -214,7 +214,6 @@ export default function Landing() {
       {/* CTA */}
       <section className="cta" id="get-started">
         <div className="cta-inner">
-         
           <h1>Ready to Make Parenting <em>Easier?</em></h1>
           <p>
             Thousands of parents trust BabyCare+ to keep their baby's health
@@ -233,7 +232,6 @@ export default function Landing() {
 
           <div className="cta-buttons">
             <button className="cta-primary" onClick={() => navigate('/login')}>Start Your Free Trial →</button>
-            
           </div>
         </div>
       </section>

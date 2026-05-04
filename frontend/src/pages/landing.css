@@ -1,21 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap');
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Outfit", sans-serif;
 }
 
 :root {
-  --pink-primary: #ff6fa5;
-  --pink-deep: #d4688a;
-  --pink-soft: #ffd6df;
-  --pink-card: #f4a4bd;
-  --pink-footer: #ec6194;
-  --text-dark: #1b1316;
-  --text-mid: #555;
-  --text-light: #777;
+  --pink-primary: #ff8fb3;
+  --pink-deep: #b56576;
+  --pink-soft: #fff0f3;
+  --pink-card: #ffe5ec;
+  --pink-footer: #ff8fb3;
+  --text-dark: #2d2327;
+  --text-mid: #6b5560;
+  --text-light: #8e7d86;
+  --bg-calm: #fff9fa;
 }
 
 /* ─── NAVBAR ─────────────────────────────────── */
@@ -61,7 +62,7 @@
 }
 
 .nav-btn {
-  background: linear-gradient(135deg, #ff8fb3, #ff6fa5);
+  background: linear-gradient(135deg, #ffb3c6, #ff8fb3);
   border: none;
   padding: 10px 24px;
   color: white;
@@ -69,8 +70,8 @@
   font-size: 14px;
   border-radius: 30px;
   cursor: pointer;
-  box-shadow: 0 4px 18px rgba(255, 111, 165, 0.35);
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(255, 143, 179, 0.25);
+  transition: all 0.3s ease;
   letter-spacing: 0.2px;
   white-space: nowrap;
 }
@@ -142,9 +143,9 @@
 .hero-left h1 {
   font-family: "Playfair Display", serif;
   font-size: clamp(36px, 5vw, 62px);
-  font-weight: 800;
+  font-weight: 700;
   color: var(--text-dark);
-  line-height: 1.08;
+  line-height: 1.1;
   animation: fadeInUp 0.8s ease-out 0.35s both;
 }
 
@@ -467,9 +468,9 @@
 .features-header h2 {
   font-family: "Playfair Display", serif;
   font-size: clamp(28px, 4vw, 42px);
-  font-weight: 800;
+  font-weight: 700;
   color: var(--text-dark);
-  line-height: 1.12;
+  line-height: 1.2;
 }
 
 .features-header h2 span {
@@ -973,7 +974,16 @@
 
   /* NAV */
   .nav {
-    padding: 14px 5%;
+    padding: 12px 4%;
+  }
+
+  .nav-links {
+    gap: 12px;
+  }
+
+  .nav-btn {
+    padding: 8px 16px;
+    font-size: 13px;
   }
 
   /* HERO — stack vertically */
