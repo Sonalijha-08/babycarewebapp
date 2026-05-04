@@ -1,6 +1,7 @@
 import axios from "axios";
 
-let baseUrl = import.meta.env.VITE_API_BASE_URL || "https://babycarewebapp-production.up.railway.app/api", data;
+let baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+
 if (!baseUrl.endsWith("/api")) {
   baseUrl = baseUrl.replace(/\/$/, "") + "/api";
 }

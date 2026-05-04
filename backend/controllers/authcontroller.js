@@ -72,6 +72,9 @@ const register = async (req, res) => {
 // ─────────────────────────────────────────────
 const login = async (req, res) => {
   try {
+    const { sendValidationErrors } = require('../middleware/validators');
+    if (sendValidationErrors(req, res)) return;
+
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
