@@ -63,6 +63,11 @@ app.get("/test-email", async (req, res) => {
   }
 });
 
+// Root route
+app.get('/', (req, res) => {
+  res.send('Baby Care API is running...');
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/feeding', feedingRoutes);
