@@ -27,11 +27,13 @@ const validateDiaperAdd = [
 
 // Growth Tracker Add
 const validateGrowthAdd = [
+  // Optional userId (allow client to send, otherwise use JWT user id)
+  body('userId').optional().isMongoId().withMessage('Invalid userId'),
   body('date').isISO8601().withMessage('Valid date required'),
-  body('weight').isFloat({ min: 0.1 }).withMessage('Weight > 0.1 kg'),
-  body('height').isFloat({ min: 10 }).withMessage('Height > 10 cm'),
-  body('headCircumference').optional().isFloat({ min: 10 }),
-  body('notes').optional().isLength({ max: 500 })
+  body('weight').toFloat().isFloat({ min: 0.1 }).withMessage('Weight > 0.1 kg'),
+  body('height').toFloat().isFloat({ min: 10 }).withMessage('Height > 10 cm'),
+  body('headCircumference').optional().isFloat({ min: 10 }).withMessage('Head circumference > 10'),
+  body('notes').optional().isLength({ max: 500 }).withMessage('Notes max 500 chars')
 ];
 
 // Sleep Log Add

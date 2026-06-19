@@ -2,7 +2,7 @@ const { Resend } = require("resend");
 
 const resendApiKey = process.env.RESEND_API_KEY;
 console.log('[Email] Resend API Key present:', !!resendApiKey, resendApiKey ? resendApiKey.substring(0, 10) + '...' : 'none');
-const resend = new Resend(resendApiKey);
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
 // Always use SMTP for sending emails - more reliable for personal Gmail accounts
 const useSMTP = true;
@@ -64,6 +64,10 @@ const sendEmail = async (to, subject, text, html) => {
   }
 
   // Original Resend logic (kept as fallback)
+  if (!resend) {
+    console.warn('[Email] Resend API key missing, skipping Resend send');
+    return { info: 'Resend disabled' };
+  }
   try {
     const res = await resend.emails.send({
       from: "Baby Care <jhasonali208@gmail.com>",

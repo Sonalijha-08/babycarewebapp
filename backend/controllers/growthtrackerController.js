@@ -3,10 +3,18 @@ const GrowthTracker = require("../models/growthtracker");
 // Add a new growth record
 const addGrowthRecord = async (req, res) => {
   try {
-    const { sendValidationErrors } = require('../middleware/validators');
-    if (sendValidationErrors(req, res)) return;
+    console.log('addGrowthRecord request body:', req.body);
+  const { sendValidationErrors } = require('../middleware/validators');
+  const validationResult = require('express-validator').validationResult;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log('Validation errors:', errors.array());
+    return res.status(400).json({ message: 'Validation failed', errors: errors.array() });
+  }
+  if (sendValidationErrors(req, res)) return;
 
-    const { userId, date, weight, height, headCircumference, notes } = req.body;
+    const { userId: bodyUserId, date, weight, height, headCircumference, notes } = req.body;
+    const userId = bodyUserId || req.user.id;
 
     const newRecord = new GrowthTracker({
       userId,

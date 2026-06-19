@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
-require('dotenv').config();
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 const scheduleDailyReset = require('./utils/dailyReset');
 const scheduleFeedingReminders = require('./utils/reminderScheduler');
 const { sendEmail } = require('./utils/resendEmail');
