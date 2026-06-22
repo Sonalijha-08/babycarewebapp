@@ -61,7 +61,15 @@ export default function GrowthTracker() {
   };
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => {
+        const updated = { ...prev };
+        delete updated[name];
+        return updated;
+      });
+    }
   };
 
   const deleteRecord = async (id) => {
@@ -72,7 +80,7 @@ export default function GrowthTracker() {
       fetchRecords(userId);
     } catch (error) {
       console.error('Error deleting record:', error);
-      alert('Failed to delete record');
+      alert(error.response?.data?.message || 'Failed to delete record');
     }
   };
 
@@ -81,10 +89,21 @@ export default function GrowthTracker() {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!form.date) newErrors.date = 'Date is required';
-    if (!form.height || form.height <= 0) newErrors.height = 'Height must be > 0';
-    if (!form.weight || form.weight <= 0) newErrors.weight = 'Weight must be > 0';
-    if (form.headCircumference && form.headCircumference <= 0) newErrors.headCircumference = 'Head circumference must be > 0';
+    if (!form.date) {
+      newErrors.date = 'Date is required';
+    }
+    
+    if (!form.height) {
+      newErrors.height = 'Height is required';
+    } else if (Number(form.height) < 10) {
+      newErrors.height = 'Height must be at least 10 cm';
+    }
+
+    if (!form.weight) {
+      newErrors.weight = 'Weight is required';
+    } else if (Number(form.weight) < 0.1) {
+      newErrors.weight = 'Weight must be at least 0.1 kg';
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -107,70 +126,74 @@ export default function GrowthTracker() {
       fetchRecords(userId);
     } catch (error) {
       console.error('Error adding growth record:', error);
+      alert(error.response?.data?.message || 'Failed to save growth record. Please check validation rules.');
     }
   };
 
-  // Calculate summary
+  // Calculate summary (table log order should remain newest first)
   const today = new Date().toISOString().split('T')[0];
   const todayRecords = records.filter(r => r.date === today).length;
   const totalRecords = records.length;
   const averageHeight = records.length > 0 ? (records.reduce((sum, r) => sum + r.height, 0) / records.length).toFixed(1) : 0;
   const averageWeight = records.length > 0 ? (records.reduce((sum, r) => sum + r.weight, 0) / records.length).toFixed(1) : 0;
 
-  const heightColors = records.map((_, i) =>
-  ['#ff5fa2','#ff7eb3','#ec4899','#f472b6','#db2777','#ff85c1'][i % 6]
-);
-const weightColors = records.map((_, i) =>
-  ['#6366f1','#818cf8','#a78bfa','#7c3aed','#8b5cf6','#4f46e5'][i % 6]
-);
+  // Chart records must be chronological (oldest to newest)
+  const chartRecords = [...records].reverse();
 
-const barChartData = {
-  labels: records.map(r => r.date),
-  datasets: [
-    {
-      label: 'Height (cm)',
-      data: records.map(r => r.height),
-      backgroundColor: heightColors,
-      borderColor: heightColors,
-      borderRadius: 10,
-      borderSkipped: false,
-      barPercentage: 0.45,
-    },
-    {
-      label: 'Weight (kg)',
-      data: records.map(r => r.weight),
-      backgroundColor: weightColors,
-      borderColor: weightColors,
-      borderRadius: 10,
-      borderSkipped: false,
-      barPercentage: 0.45,
-    },
-  ],
-};
+  const heightColors = chartRecords.map((_, i) =>
+    ['#ff5fa2', '#ff7eb3', '#ec4899', '#f472b6', '#db2777', '#ff85c1'][i % 6]
+  );
+  const weightColors = chartRecords.map((_, i) =>
+    ['#6366f1', '#818cf8', '#a78bfa', '#7c3aed', '#8b5cf6', '#4f46e5'][i % 6]
+  );
 
-const barChartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: { display: false },
-    tooltip: {
-      backgroundColor: '#fff',
-      titleColor: '#ff5fa2',
-      bodyColor: '#555',
-      borderColor: '#ffb3d4',
-      borderWidth: 1,
-      padding: 10,
-      cornerRadius: 10,
+  const barChartData = {
+    labels: chartRecords.map(r => r.date),
+    datasets: [
+      {
+        label: 'Height (cm)',
+        data: chartRecords.map(r => r.height),
+        backgroundColor: heightColors,
+        borderColor: heightColors,
+        borderRadius: 10,
+        borderSkipped: false,
+        barPercentage: 0.45,
+      },
+      {
+        label: 'Weight (kg)',
+        data: chartRecords.map(r => r.weight),
+        backgroundColor: weightColors,
+        borderColor: weightColors,
+        borderRadius: 10,
+        borderSkipped: false,
+        barPercentage: 0.45,
+      },
+    ],
+  };
+
+  const barChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#fff',
+        titleColor: '#ff5fa2',
+        bodyColor: '#555',
+        borderColor: '#ffb3d4',
+        borderWidth: 1,
+        padding: 10,
+        cornerRadius: 10,
+      },
     },
-  },
-  scales: {
-    x: { grid: { display: false }, ticks: { color: '#aaa' }, border: { display: false } },
-    y: { grid: { color: 'rgba(255,180,220,0.15)' }, ticks: { color: '#aaa' }, border: { display: false } },
-  },
-  animation: {
-    duration: 1000,
-  },
-};
+    scales: {
+      x: { grid: { display: false }, ticks: { color: '#aaa' }, border: { display: false } },
+      y: { grid: { color: 'rgba(255,180,220,0.15)' }, ticks: { color: '#aaa' }, border: { display: false } },
+    },
+    animation: {
+      duration: 1000,
+    },
+  };
 
   return (
     <div className="growth-page">
@@ -236,113 +259,110 @@ const barChartOptions = {
 
         {/* Tab Content */}
         {activeTab === "log" && (
-          <div style={{ background: '#ffffff', padding: '20px', borderRadius: '18px', boxShadow: '0 8px 20px rgba(255, 105, 180, 0.2)', marginTop: '20px' }}>
-            <h2 style={{ color: '#ff5fa2', marginBottom: '20px' }}>Add New Growth Record</h2>
-            <form onSubmit={addGrowth} style={{ display: 'grid', gap: '15px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '5px', color: '#555' }}>Date</label>
+          <div className="growth-card growth-form-section">
+            <h2>Add New Growth Record</h2>
+            <form onSubmit={addGrowth} className="growth-form">
+              <div className="growth-form-grid">
+                <div className="form-group">
+                  <label htmlFor="date-input">Date</label>
                   <input
+                    id="date-input"
                     type="date"
                     name="date"
                     value={form.date}
                     onChange={handleChange}
-                    style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: '5px' }}
+                    className={`growth-input ${errors.date ? 'input-error' : ''}`}
                     required
                   />
+                  {errors.date && <span className="field-error-message">{errors.date}</span>}
                 </div>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '5px', color: '#555' }}>Height (cm)</label>
+                <div className="form-group">
+                  <label htmlFor="height-input">Height (cm)</label>
                   <input
+                    id="height-input"
                     type="number"
+                    step="any"
                     name="height"
-                    placeholder="Height (cm)"
+                    placeholder="Height (cm) - Min 10"
                     value={form.height}
                     onChange={handleChange}
-                    style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: '5px' }}
+                    className={`growth-input ${errors.height ? 'input-error' : ''}`}
                     required
                   />
+                  {errors.height && <span className="field-error-message">{errors.height}</span>}
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '5px', color: '#555' }}>Weight (kg)</label>
+              <div className="growth-form-grid">
+                <div className="form-group">
+                  <label htmlFor="weight-input">Weight (kg)</label>
                   <input
+                    id="weight-input"
                     type="number"
+                    step="any"
                     name="weight"
-                    placeholder="Weight (kg)"
+                    placeholder="Weight (kg) - Min 0.1"
                     value={form.weight}
                     onChange={handleChange}
-                    style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: '5px' }}
+                    className={`growth-input ${errors.weight ? 'input-error' : ''}`}
                     required
                   />
+                  {errors.weight && <span className="field-error-message">{errors.weight}</span>}
                 </div>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '5px', color: '#555' }}>Notes</label>
+                <div className="form-group">
+                  <label htmlFor="notes-input">Notes</label>
                   <textarea
+                    id="notes-input"
                     name="notes"
-                    placeholder="Notes"
+                    placeholder="Notes (optional)"
                     value={form.notes}
                     onChange={handleChange}
-                    style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: '5px', minHeight: '60px' }}
+                    className="growth-textarea"
                   />
                 </div>
               </div>
               <button
                 type="submit"
-                disabled={Object.keys(errors).length > 0}
-                style={{ 
-                  background: Object.keys(errors).length > 0 ? '#ccc' : 'linear-gradient(135deg, #ff5fa2, #ff85b2)', 
-                  color: 'white', padding: '10px 20px', border: 'none', borderRadius: '25px', cursor: Object.keys(errors).length > 0 ? 'not-allowed' : 'pointer', fontSize: '16px' 
-                }}
+                className="growth-submit-btn"
               >
-                {Object.keys(errors).length > 0 ? 'Fix errors above' : 'Save Growth Record'}
+                Save Growth Record
               </button>
-              {Object.keys(errors).length > 0 && (
-                <div style={{ color: '#ff5fa2', fontSize: '14px', textAlign: 'center' }}>
-                  Please fix the errors above before submitting
-                </div>
-              )}
             </form>
           </div>
         )}
 
-{activeTab === "chart" && (
-  <div style={{ background: '#ffffff', padding: '20px', borderRadius: '18px', boxShadow: '0 8px 20px rgba(255, 105, 180, 0.2)', marginTop: '20px' }}>
-    <h2 style={{ color: '#ff5fa2', marginBottom: '20px' }}>Growth Chart</h2>
+        {activeTab === "chart" && (
+          <div className="growth-card growth-chart-section">
+            <h2>Growth Chart</h2>
 
-    {/* Custom Legend */}
-    <div style={{ display: 'flex', gap: '16px', marginBottom: '16px', fontSize: '12px', color: '#888' }}>
-      <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-        <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: '#ec4899', display: 'inline-block' }}></span>
-        Height (cm)
-      </span>
-      <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-        <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: '#6366f1', display: 'inline-block' }}></span>
-        Weight (kg)
-      </span>
-    </div>
+            {/* Custom Legend */}
+            <div className="custom-legend">
+              <span className="legend-item">
+                <span className="legend-dot height-dot"></span>
+                Height (cm)
+              </span>
+              <span className="legend-item">
+                <span className="legend-dot weight-dot"></span>
+                Weight (kg)
+              </span>
+            </div>
 
-    <div style={{ height: '400px', position: 'relative' }}>
-      {isLoading ? (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#999' }}>
-          Loading chart...
-        </div>
-      ) : records.length === 0 ? (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#999', textAlign: 'center', padding: '40px' }}>
-          <div style={{ fontSize: '48px', marginBottom: '16px' }}>📊</div>
-          <h3>No growth data yet</h3>
-          <p>Add some growth records to see the chart!</p>
-        </div>
-      ) : (
-        <>
-          {console.log('Chart records:', records)}
-          <Bar data={barChartData} options={barChartOptions} />
-        </>
-      )}
-    </div>
-  </div>
-)}
+            <div className="chart-container-wrapper">
+              {isLoading ? (
+                <div className="chart-placeholder loading">
+                  Loading chart...
+                </div>
+              ) : records.length === 0 ? (
+                <div className="chart-placeholder empty">
+                  <div className="empty-icon">📊</div>
+                  <h3>No growth data yet</h3>
+                  <p>Add some growth records to see the chart!</p>
+                </div>
+              ) : (
+                <Bar data={barChartData} options={barChartOptions} />
+              )}
+            </div>
+          </div>
+        )}
 
         {activeTab === "history" && (
           <div className="growth-table">
@@ -363,7 +383,7 @@ const barChartOptions = {
                   </tr>
                 ) : (
                   records.map((r, i) => (
-                    <tr key={i}>
+                    <tr key={r._id || i}>
                       <td>{r.date}</td>
                       <td>{r.height} cm</td>
                       <td>{r.weight} kg</td>
@@ -371,7 +391,7 @@ const barChartOptions = {
                       <td>
                         <button 
                           onClick={() => deleteRecord(r._id)}
-                          style={{ color: '#ff5fa2', border: 'none', background: 'none', cursor: 'pointer' }}
+                          className="growth-delete-btn"
                           title="Delete record"
                         >
                           Delete

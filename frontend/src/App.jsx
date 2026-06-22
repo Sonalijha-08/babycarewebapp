@@ -33,11 +33,46 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/feedingLog" element={<FeedingLog />} />
-        <Route path="/sleeplog" element={<SleepLog />} />
-        <Route path="/diaperLog" element={<DiaperLog />} />
-        <Route path="/growthTracker" element={<GrowthTracker />} />
-        <Route path="/vaccinations" element={<Vaccinations />} />
+        <Route
+          path="/feedingLog"
+          element={
+            <ProtectedRoute>
+              <FeedingLog />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sleeplog"
+          element={
+            <ProtectedRoute>
+              <SleepLog />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/diaperLog"
+          element={
+            <ProtectedRoute>
+              <DiaperLog />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/growthTracker"
+          element={
+            <ProtectedRoute>
+              <GrowthTracker />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/vaccinations"
+          element={
+            <ProtectedRoute>
+              <Vaccinations />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/tips" element={<Tips />} />
         <Route
           path="/profile"
