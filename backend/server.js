@@ -13,6 +13,7 @@ const sleeplogRoutes = require('./routes/sleeplogRoutes');
 const diaperlogRoutes = require('./routes/diaperlogRoutes');
 const growthtrackerRoutes = require('./routes/growthtrackerRoutes');
 const vaccinationsRoutes = require('./routes/vaccinationsRoutes');
+const profileRoutes = require('./routes/profileRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -75,6 +76,7 @@ app.use('/api/sleeplog', sleeplogRoutes);
 app.use('/api/diaperlog', diaperlogRoutes);
 app.use('/api/growthtracker', growthtrackerRoutes);
 app.use('/api/vaccinations', vaccinationsRoutes);
+app.use('/api/profile', profileRoutes);
 
 // Start server
 app.listen(PORT, () => {
