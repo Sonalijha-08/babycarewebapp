@@ -1,6 +1,5 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const scheduleDailyReset = require('./utils/dailyReset');
@@ -18,33 +17,34 @@ const profileRoutes = require('./routes/profileRoutes');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-const allowedOrigins = [
-  'https://babycarewebapp-frontend.vercel.app',
-  'http://localhost:5173',
-  'http://localhost:3000',
-  process.env.FRONTEND_URL,
-].filter(Boolean);
+// ── CORS ──────────────────────────────────────────────────────────
+// Manually set CORS headers on every response so preflight OPTIONS
+// requests are never rejected — even if the server is waking up.
+app.use((req, res, next) => {
+  const origin = req.headers.origin || '';
 
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, Postman)
-    if (!origin) return callback(null, true);
+  // Allow localhost and any *.vercel.app domain
+  const isAllowed =
+    !origin ||
+    origin.includes('vercel.app') ||
+    origin.includes('localhost') ||
+    origin === (process.env.FRONTEND_URL || '');
 
-    // Allow any Vercel domain dynamically
-    if (origin.endsWith('.vercel.app') || origin.includes('vercel.app')) {
-      return callback(null, true);
-    }
+  if (isAllowed) {
+    res.setHeader('Access-Control-Allow-Origin', origin || '*');
+  }
 
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      return callback(null, true);
-    }
-    return callback(new Error('CORS: Not allowed by policy'));
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS,PATCH');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With');
+
+  // Respond immediately to preflight
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
