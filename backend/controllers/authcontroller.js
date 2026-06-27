@@ -44,11 +44,9 @@ const upload = multer({
 // ─────────────────────────────────────────────
 const register = async (req, res) => {
   try {
-    const { sendValidationErrors } = require('../middleware/validators');
-    if (sendValidationErrors(req, res)) return;
-
     const { name, email, password } = req.body;
 
+    // Email lookup uses the raw email as typed — no normalizeEmail() transformation
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
@@ -71,9 +69,6 @@ const register = async (req, res) => {
 // ─────────────────────────────────────────────
 const login = async (req, res) => {
   try {
-    const { sendValidationErrors } = require('../middleware/validators');
-    if (sendValidationErrors(req, res)) return;
-
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
@@ -84,15 +79,17 @@ const login = async (req, res) => {
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
 
-    // Send login notification email (non-blocking — log errors only)
-    try {
-      const subject = "Login notification — Baby Care";
-      const text = `Hi ${user.name || "User"},\n\nYou have successfully logged in to Baby Care using ${user.email}. If this wasn't you, please secure your account.`;
-      const html = `<p>Hi ${user.name || "User"},</p><p>You have successfully logged in to <strong>Baby Care</strong> using <code>${user.email}</code>.</p><p>If this wasn't you, please secure your account.</p>`;
-      sendEmail(user.email, subject, text, html).catch((err) => console.error("Login email error:", err));
-    } catch (err) {
-      console.error("Failed to queue login email:", err);
-    }
+    // Send login notification email — fully fire-and-forget, NEVER blocks login
+    void (async () => {
+      try {
+        const subject = "Login notification — Baby Care";
+        const text = `Hi ${user.name || "User"},\n\nYou have successfully logged in to Baby Care using ${user.email}. If this wasn't you, please secure your account.`;
+        const html = `<p>Hi ${user.name || "User"},</p><p>You have successfully logged in to <strong>Baby Care</strong> using <code>${user.email}</code>.</p><p>If this wasn't you, please secure your account.</p>`;
+        await sendEmail(user.email, subject, text, html);
+      } catch (err) {
+        console.error("Login email error (non-blocking):", err.message);
+      }
+    })();
 
     res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
   } catch (error) {
@@ -100,6 +97,7 @@ const login = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 // ─────────────────────────────────────────────
 // GET /auth/profile

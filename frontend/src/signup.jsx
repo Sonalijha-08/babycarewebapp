@@ -89,6 +89,9 @@ const Signup = () => {
               required
             />
           </div>
+          <p style={{ fontSize: "0.75rem", color: "#888", margin: "-8px 0 8px 4px" }}>
+            At least 8 characters, one uppercase, one lowercase, one number
+          </p>
 
           <button type="submit" className="login-button">
             Sign Up

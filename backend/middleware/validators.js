@@ -72,15 +72,20 @@ const validateVaccinationAdd = [
 
 // Auth Register
 const validateRegister = [
-  body('name').isLength({ min: 2, max: 50 }).withMessage('Name 2-50 chars'),
-  body('email').isEmail().normalizeEmail().withMessage('Valid email required'),
-  body('password').isLength({ min: 8 }).matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('Password: 8+ chars, 1 upper, 1 lower, 1 number')
+  body('name').trim().isLength({ min: 2, max: 50 }).withMessage('Name must be 2-50 characters'),
+  // DO NOT use normalizeEmail() — it mutates the email and causes login mismatches
+  body('email').trim().isEmail().withMessage('Please enter a valid email address'),
+  body('password')
+    .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage('Password must contain at least one uppercase letter, one lowercase letter, and one number')
 ];
 
 // Auth Login
 const validateLogin = [
-  body('email').isEmail().normalizeEmail().withMessage('Valid email required'),
-  body('password').notEmpty().withMessage('Password required')
+  // DO NOT use normalizeEmail() — must match exactly what was stored at registration
+  body('email').trim().isEmail().withMessage('Please enter a valid email address'),
+  body('password').notEmpty().withMessage('Password is required')
 ];
 
 // Profile Update
