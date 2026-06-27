@@ -1,13 +1,13 @@
 import axios from "axios";
 
-let baseUrl = import.meta.env.VITE_API_BASE_URL || "https://babycarewebapp.onrender.com/api";
-
-if (!baseUrl.endsWith("/api")) {
-  baseUrl = baseUrl.replace(/\/$/, "") + "/api";
-}
+// VITE_API_BASE_URL must be set in the Vercel dashboard for production builds.
+// Local dev: set in frontend/.env
+// Fallback: Render backend URL
+const baseURL =
+  import.meta.env.VITE_API_BASE_URL || "https://babycarewebapp.onrender.com/api";
 
 const api = axios.create({
-  baseURL: baseUrl,
+  baseURL,
 });
 
 api.interceptors.request.use((config) => {
