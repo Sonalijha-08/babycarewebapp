@@ -20,20 +20,27 @@ const PORT = process.env.PORT || 5000;
 // ── CORS ──────────────────────────────────────────────────────────
 // Manually set CORS headers on every response so preflight OPTIONS
 // requests are never rejected — even if the server is waking up.
+const ALLOWED_ORIGINS = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://babycarewebapp-z5k9.vercel.app', // explicit Vercel URL
+  process.env.FRONTEND_URL || '',
+];
+
 app.use((req, res, next) => {
   const origin = req.headers.origin || '';
 
-  // Allow localhost and any *.vercel.app domain
+  console.log(`[CORS] ${req.method} ${req.path} — origin: "${origin}"`);
+
+  // Allow: exact match, any *.vercel.app, any localhost
   const isAllowed =
     !origin ||
+    ALLOWED_ORIGINS.includes(origin) ||
     origin.includes('vercel.app') ||
-    origin.includes('localhost') ||
-    origin === (process.env.FRONTEND_URL || '');
+    origin.includes('localhost');
 
-  if (isAllowed) {
-    res.setHeader('Access-Control-Allow-Origin', origin || '*');
-  }
-
+  // Always set CORS headers — use matched origin or wildcard fallback
+  res.setHeader('Access-Control-Allow-Origin', isAllowed ? (origin || '*') : '*');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS,PATCH');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With');
