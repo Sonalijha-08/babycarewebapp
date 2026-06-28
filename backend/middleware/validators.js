@@ -90,9 +90,10 @@ const validateLogin = [
 
 // Profile Update
 const validateProfileUpdate = [
-  body('name').isLength({ min: 2, max: 50 }).withMessage('Name 2-50 chars'),
-  body('email').isEmail().normalizeEmail().withMessage('Valid email required'),
-  body('phone').optional().matches(/^[+]?[0-9]{10,15}$/).withMessage('Valid phone'),
+  body('name').trim().isLength({ min: 2, max: 50 }).withMessage('Name must be 2-50 characters'),
+  // DO NOT use normalizeEmail() — it mutates the email and causes login mismatches
+  body('email').trim().isEmail().withMessage('Please enter a valid email address'),
+  body('phone').optional().matches(/^[+]?[0-9]{10,15}$/).withMessage('Valid phone number'),
   body('babyName').optional().isLength({ max: 50 }),
   body('babyDOB').optional().isISO8601()
 ];
